@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scenario: What if Raj Patel resigns?</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/components/ee-person-card.js" type="module"></script>
+  <script src="/components/ee-stat-card.js" type="module"></script>
+  <script src="/components/ee-team-grid.js" type="module"></script>
+  <script src="/components/ee-alert-banner.js" type="module"></script>
+</head>
+<body>
+  <div class="scenario-header">
+    <h1>What happens if Raj Patel resigns?</h1>
+    <p>Composed view using atomic primitives — assembled from graph traversal data</p>
+  </div>
+
+  <div class="scenario-grid">
+    <div class="scenario-sidebar">
+      <div id="person-card"></div>
+      <div id="alerts"></div>
+    </div>
+    <div class="scenario-main">
+      <div class="stats-row" id="stats"></div>
+      <div id="team-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    async function loadScenario() {
+      try {
+        const res = await fetch('/api/graph/sample');
+        const data = await res.json();
+        const impact = data.impactRadius;
+
+        if (!impact || impact.error) {
+          document.querySelector('.scenario-main').textContent = 'Could not load impact data.';
+          return;
+        }
+
+        // Person card
+        const personCard = document.createElement('ee-person-card');
+        personCard.setAttribute('size', 'lg');
+        personCard.person = impact.person;
+        document.getElementById('person-card').appendChild(personCard);
+
+        // Stat cards
+        const statsContainer = document.getElementById('stats');
+        const stats = [
+          {
+            label: 'Direct Reports',
+            value: String(impact.summary.totalDirectReports),
+            context: impact.summary.totalDirectReports > 0 ? 'Need reassignment' : '',
+            severity: impact.summary.totalDirectReports > 3 ? 'warning' : 'info'
+          },
+          {
+            label: 'Projects',
+            value: String(impact.summary.totalProjects),
+            context: impact.summary.soloProjects.length ? `${impact.summary.soloProjects.length} solo` : '',
+            severity: impact.summary.soloProjects.length > 0 ? 'critical' : 'info'
+          },
+          {
+            label: 'Unique Skills',
+            value: String(impact.summary.uniqueSkills.length),
+            context: impact.summary.uniqueSkills.length ? 'Few others have these' : 'Good coverage',
+            severity: impact.summary.uniqueSkills.length > 2 ? 'critical' : impact.summary.uniqueSkills.length > 0 ? 'warning' : 'success'
+          },
+          {
+            label: 'Mentees at Risk',
+            value: String(impact.summary.menteesWithNoOtherMentor.length),
+            context: impact.summary.menteesWithNoOtherMentor.length ? 'No other mentor' : 'All have backups',
+            severity: impact.summary.menteesWithNoOtherMentor.length > 0 ? 'warning' : 'success'
+          }
+        ];
+
+        for (const s of stats) {
+          const card = document.createElement('ee-stat-card');
+          card.setAttribute('label', s.label);
+          card.setAttribute('value', s.value);
+          if (s.context) card.setAttribute('context', s.context);
+          if (s.severity) card.setAttribute('severity', s.severity);
+          statsContainer.appendChild(card);
+        }
+
+        // Alert banners
+        const alertsContainer = document.getElementById('alerts');
+        const alerts = [];
+
+        if (impact.summary.soloProjects.length > 0) {
+          alerts.push({
+            severity: 'critical',
+            message: `Solo contributor on: ${impact.summary.soloProjects.join(', ')}`
+          });
+        }
+        if (impact.summary.menteesWithNoOtherMentor.length > 0) {
+          alerts.push({
+            severity: 'warning',
+            message: `${impact.summary.menteesWithNoOtherMentor.join(', ')} lose their only mentor`
+          });
+        }
+        if (impact.summary.uniqueSkills.length > 0) {
+          alerts.push({
+            severity: 'warning',
+            message: `Rare skills at risk: ${impact.summary.uniqueSkills.join(', ')}`
+          });
+        }
+        if (impact.summary.criticalProjects.length > 0) {
+          alerts.push({
+            severity: 'critical',
+            message: `High-priority projects affected: ${impact.summary.criticalProjects.join(', ')}`
+          });
+        }
+
+        for (const a of alerts) {
+          const banner = document.createElement('ee-alert-banner');
+          banner.setAttribute('severity', a.severity);
+          banner.setAttribute('message', a.message);
+          alertsContainer.appendChild(banner);
+        }
+
+        // Team grid — show the first team this person is on
+        if (impact.teams && impact.teams.count > 0) {
+          const teamId = impact.teams.items[0].id;
+          const teamRes = await fetch(`/api/graph/team/${teamId}`);
+          const teamData = await teamRes.json();
+
+          if (!teamData.error) {
+            const grid = document.createElement('ee-team-grid');
+            grid.teamName = teamData.team?.name || 'Team';
+            grid.manager = teamData.manager;
+            grid.members = teamData.members;
+            document.getElementById('team-grid').appendChild(grid);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load scenario data:', err);
+      }
+    }
+
+    loadScenario();
+  </script>
+</body>
+</html>

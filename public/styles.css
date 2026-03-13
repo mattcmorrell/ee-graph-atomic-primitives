@@ -1,0 +1,177 @@
+/* === Atomic Primitives — Design Tokens === */
+
+:root {
+  /* Colors */
+  --ee-color-primary: #1a1a2e;
+  --ee-color-primary-light: #2d2d4a;
+  --ee-color-secondary: #4a6fa5;
+  --ee-color-accent: #6c63ff;
+  --ee-color-accent-light: #8b83ff;
+
+  --ee-color-surface: #ffffff;
+  --ee-color-surface-alt: #f8f9fb;
+  --ee-color-surface-hover: #f0f2f5;
+  --ee-color-border: #e2e5ea;
+  --ee-color-border-light: #eef0f3;
+
+  --ee-color-text: #1a1a2e;
+  --ee-color-text-secondary: #5a6172;
+  --ee-color-text-muted: #8b91a0;
+  --ee-color-text-inverse: #ffffff;
+
+  /* Severity / Status */
+  --ee-color-info: #4a6fa5;
+  --ee-color-info-bg: #eef3fa;
+  --ee-color-warning: #d4a017;
+  --ee-color-warning-bg: #fef9e7;
+  --ee-color-critical: #c0392b;
+  --ee-color-critical-bg: #fdecea;
+  --ee-color-success: #27ae60;
+  --ee-color-success-bg: #eafaf1;
+
+  /* Typography */
+  --ee-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ee-font-size-xs: 0.75rem;    /* 12px — decorative labels only */
+  --ee-font-size-sm: 0.8rem;     /* 12.8px — floor for readable text */
+  --ee-font-size-base: 0.875rem; /* 14px — body text */
+  --ee-font-size-md: 1rem;       /* 16px */
+  --ee-font-size-lg: 1.125rem;   /* 18px */
+  --ee-font-size-xl: 1.5rem;     /* 24px */
+  --ee-font-size-2xl: 2rem;      /* 32px */
+
+  --ee-font-weight-normal: 400;
+  --ee-font-weight-medium: 500;
+  --ee-font-weight-semibold: 600;
+  --ee-font-weight-bold: 700;
+
+  --ee-line-height: 1.5;
+  --ee-line-height-tight: 1.25;
+
+  /* Spacing */
+  --ee-space-xs: 0.25rem;   /* 4px */
+  --ee-space-sm: 0.5rem;    /* 8px */
+  --ee-space-md: 0.75rem;   /* 12px */
+  --ee-space-lg: 1rem;      /* 16px */
+  --ee-space-xl: 1.5rem;    /* 24px */
+  --ee-space-2xl: 2rem;     /* 32px */
+  --ee-space-3xl: 3rem;     /* 48px */
+
+  /* Borders & Shapes */
+  --ee-radius-sm: 4px;
+  --ee-radius-md: 8px;
+  --ee-radius-lg: 12px;
+  --ee-radius-full: 9999px;
+
+  --ee-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ee-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ee-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+  /* Avatar */
+  --ee-avatar-size-sm: 32px;
+  --ee-avatar-size-md: 48px;
+  --ee-avatar-size-lg: 64px;
+}
+
+/* === Base Reset === */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--ee-font-family);
+  font-size: var(--ee-font-size-base);
+  line-height: var(--ee-line-height);
+  color: var(--ee-color-text);
+  background: var(--ee-color-surface-alt);
+}
+
+/* === Gallery / Demo Page Styles === */
+
+.gallery-header {
+  background: var(--ee-color-primary);
+  color: var(--ee-color-text-inverse);
+  padding: var(--ee-space-xl) var(--ee-space-2xl);
+}
+
+.gallery-header h1 {
+  margin: 0 0 var(--ee-space-xs);
+  font-size: var(--ee-font-size-xl);
+  font-weight: var(--ee-font-weight-bold);
+}
+
+.gallery-header p {
+  margin: 0;
+  color: var(--ee-color-text-muted);
+  font-size: var(--ee-font-size-base);
+}
+
+.gallery-section {
+  padding: var(--ee-space-2xl);
+}
+
+.gallery-section h2 {
+  font-size: var(--ee-font-size-lg);
+  font-weight: var(--ee-font-weight-semibold);
+  margin: 0 0 var(--ee-space-xs);
+  color: var(--ee-color-text);
+}
+
+.gallery-section p.description {
+  color: var(--ee-color-text-secondary);
+  font-size: var(--ee-font-size-sm);
+  margin: 0 0 var(--ee-space-lg);
+}
+
+.gallery-section + .gallery-section {
+  border-top: 1px solid var(--ee-color-border-light);
+}
+
+.component-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ee-space-lg);
+}
+
+/* Scenario page layout */
+.scenario-header {
+  background: var(--ee-color-primary);
+  color: var(--ee-color-text-inverse);
+  padding: var(--ee-space-xl) var(--ee-space-2xl);
+}
+
+.scenario-header h1 {
+  margin: 0 0 var(--ee-space-xs);
+  font-size: var(--ee-font-size-xl);
+}
+
+.scenario-header p {
+  margin: 0;
+  color: var(--ee-color-text-muted);
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--ee-space-xl);
+  padding: var(--ee-space-2xl);
+}
+
+.scenario-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ee-space-lg);
+}
+
+.scenario-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ee-space-lg);
+}
+
+.stats-row {
+  display: flex;
+  gap: var(--ee-space-lg);
+  flex-wrap: wrap;
+}

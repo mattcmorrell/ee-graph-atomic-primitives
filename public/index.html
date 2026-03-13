@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atomic Primitives — Component Gallery</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/components/ee-person-card.js" type="module"></script>
+  <script src="/components/ee-stat-card.js" type="module"></script>
+  <script src="/components/ee-team-grid.js" type="module"></script>
+  <script src="/components/ee-alert-banner.js" type="module"></script>
+</head>
+<body>
+  <div class="gallery-header">
+    <h1>Atomic Primitives</h1>
+    <p>Component gallery — Web Components for AI-assembled EE graph views</p>
+  </div>
+
+  <!-- Person Card -->
+  <div class="gallery-section" id="person-card-section">
+    <h2>&lt;ee-person-card&gt;</h2>
+    <p class="description">Displays a person from the EE graph. Sizes: sm, md, lg.</p>
+    <div class="component-row" id="person-cards"></div>
+  </div>
+
+  <!-- Stat Card -->
+  <div class="gallery-section" id="stat-card-section">
+    <h2>&lt;ee-stat-card&gt;</h2>
+    <p class="description">Single key metric with label and optional context. Supports severity levels.</p>
+    <div class="component-row" id="stat-cards">
+      <ee-stat-card label="Direct Reports" value="7" context="2 with no backup"></ee-stat-card>
+      <ee-stat-card label="Projects at Risk" value="3" severity="warning" context="1 solo contributor"></ee-stat-card>
+      <ee-stat-card label="Unique Skills" value="4" severity="critical" context="< 3 others have these"></ee-stat-card>
+      <ee-stat-card label="Team Coverage" value="92%" severity="success"></ee-stat-card>
+    </div>
+  </div>
+
+  <!-- Alert Banner -->
+  <div class="gallery-section" id="alert-banner-section">
+    <h2>&lt;ee-alert-banner&gt;</h2>
+    <p class="description">Attention banner with severity level. Supports optional action buttons.</p>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 640px;">
+      <ee-alert-banner severity="info" message="3 employees requested EU office transfers this quarter."></ee-alert-banner>
+      <ee-alert-banner severity="warning" message="K8s certification expires for 2 team members next month." action="View Details"></ee-alert-banner>
+      <ee-alert-banner severity="critical" message="Only 1 person holds the Terraform certification on Platform team." action="See Coverage"></ee-alert-banner>
+      <ee-alert-banner severity="success" message="All engineering teams meet the 2-person K8s certification requirement."></ee-alert-banner>
+    </div>
+  </div>
+
+  <!-- Team Grid -->
+  <div class="gallery-section" id="team-grid-section">
+    <h2>&lt;ee-team-grid&gt;</h2>
+    <p class="description">Grid of person cards showing team composition with optional manager highlight.</p>
+    <div id="team-grid-container"></div>
+  </div>
+
+  <script>
+    async function loadGallery() {
+      try {
+        const res = await fetch('/api/graph/sample');
+        const data = await res.json();
+
+        // Person cards — show different sizes
+        const container = document.getElementById('person-cards');
+        if (data.people && data.people.length) {
+          ['lg', 'md', 'sm'].forEach((size, i) => {
+            if (data.people[i]) {
+              const card = document.createElement('ee-person-card');
+              card.setAttribute('size', size);
+              card.person = data.people[i];
+              container.appendChild(card);
+            }
+          });
+        }
+
+        // Team grid
+        if (data.sampleTeam && !data.sampleTeam.error) {
+          const teamContainer = document.getElementById('team-grid-container');
+          const grid = document.createElement('ee-team-grid');
+          grid.teamName = data.sampleTeam.team?.name || 'Team';
+          grid.manager = data.sampleTeam.manager;
+          grid.members = data.sampleTeam.members;
+          teamContainer.appendChild(grid);
+        }
+      } catch (err) {
+        console.error('Failed to load gallery data:', err);
+      }
+    }
+
+    loadGallery();
+  </script>
+</body>
+</html>
