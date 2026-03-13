@@ -1,11 +1,8 @@
 /**
- * <ee-stat-card> — Displays a single key metric with label and optional context.
+ * <ee-stat-card> — Single metric with label and optional context.
  *
- * Attributes:
- *   label    — The metric label (e.g., "Direct Reports")
- *   value    — The metric value (e.g., "7")
- *   context  — Optional context line (e.g., "3 with no backup")
- *   severity — Optional: "info" | "warning" | "critical" | "success"
+ * Attributes: label, value, context, severity (info|warning|critical|success)
+ * Grid sizing: 2x1 always
  */
 
 class EeStatCard extends HTMLElement {
@@ -16,13 +13,10 @@ class EeStatCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  attributeChangedCallback() {
-    this.render();
-  }
+  get gridSize() { return { cols: 2, rows: 1 }; }
 
-  connectedCallback() {
-    this.render();
-  }
+  attributeChangedCallback() { this.render(); }
+  connectedCallback() { this.render(); }
 
   render() {
     const label = this.getAttribute('label') || '';
@@ -42,37 +36,36 @@ class EeStatCard extends HTMLElement {
 
   styles() {
     return `
-      :host {
-        display: block;
-      }
+      :host { display: block; font-family: var(--ee-font-family, -apple-system, BlinkMacSystemFont, sans-serif); height: 100%; }
       .card {
-        padding: var(--ee-space-lg, 1rem) var(--ee-space-xl, 1.5rem);
+        padding: 0.75rem 1rem;
         background: var(--ee-color-surface, #fff);
         border: 1px solid var(--ee-color-border, #e2e5ea);
-        border-radius: var(--ee-radius-md, 8px);
-        min-width: 140px;
+        border-radius: 8px;
+        height: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         transition: box-shadow 0.15s ease;
       }
-      .card:hover {
-        box-shadow: var(--ee-shadow-md, 0 2px 8px rgba(0,0,0,0.08));
-      }
+      .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
       .value {
-        font-size: var(--ee-font-size-2xl, 2rem);
-        font-weight: var(--ee-font-weight-bold, 700);
+        font-size: 1.75rem;
+        font-weight: 700;
         color: var(--ee-color-text, #1a1a2e);
-        line-height: var(--ee-line-height-tight, 1.25);
+        line-height: 1.2;
       }
       .label {
-        font-size: var(--ee-font-size-sm, 0.8rem);
+        font-size: 0.8rem;
         color: var(--ee-color-text-secondary, #5a6172);
-        margin-top: var(--ee-space-xs, 0.25rem);
+        margin-top: 0.15rem;
       }
       .context {
-        font-size: var(--ee-font-size-sm, 0.8rem);
+        font-size: 0.8rem;
         color: var(--ee-color-text-muted, #8b91a0);
-        margin-top: var(--ee-space-sm, 0.5rem);
+        margin-top: 0.35rem;
       }
-      /* Severity variants */
       .severity-info { border-left: 3px solid var(--ee-color-info, #4a6fa5); }
       .severity-warning { border-left: 3px solid var(--ee-color-warning, #d4a017); }
       .severity-warning .value { color: var(--ee-color-warning, #d4a017); }

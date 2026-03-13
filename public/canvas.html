@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atomic Primitives — Canvas</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--ee-color-surface-alt, #f8f9fb);
+    }
+
+    #canvas-viewport {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      cursor: grab;
+    }
+
+    #canvas-viewport:active {
+      cursor: grabbing;
+    }
+
+    /* Block styling */
+    .canvas-block {
+      position: absolute;
+      z-index: 1;
+    }
+
+    /* Floating input bar */
+    .input-bar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-bar .chips {
+      display: flex;
+      gap: 6px;
+    }
+
+    .input-bar .chip {
+      background: var(--ee-color-surface, #fff);
+      border: 1px solid var(--ee-color-border, #e2e5ea);
+      border-radius: 9999px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      color: var(--ee-color-text-secondary, #5a6172);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--ee-font-family);
+      white-space: nowrap;
+    }
+
+    .input-bar .chip:hover {
+      background: var(--ee-color-surface-hover, #f0f2f5);
+      border-color: var(--ee-color-accent, #6c63ff);
+      color: var(--ee-color-accent, #6c63ff);
+    }
+
+    .input-bar .input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ee-color-surface, #fff);
+      border: 1px solid var(--ee-color-border, #e2e5ea);
+      border-radius: 12px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      width: 480px;
+      max-width: 90vw;
+    }
+
+    .input-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.9rem;
+      font-family: var(--ee-font-family);
+      color: var(--ee-color-text);
+      background: transparent;
+    }
+
+    .input-bar input::placeholder {
+      color: var(--ee-color-text-muted, #8b91a0);
+    }
+
+    .input-bar .send-btn {
+      background: var(--ee-color-accent, #6c63ff);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .input-bar .send-btn:hover { opacity: 0.85; }
+
+    /* Zoom controls */
+    .zoom-controls {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .zoom-controls button {
+      width: 36px;
+      height: 36px;
+      background: var(--ee-color-surface, #fff);
+      border: 1px solid var(--ee-color-border, #e2e5ea);
+      border-radius: 8px;
+      font-size: 1.1rem;
+      color: var(--ee-color-text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .zoom-controls button:hover {
+      background: var(--ee-color-surface-hover);
+      border-color: var(--ee-color-accent);
+    }
+
+    /* Loading state */
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--ee-color-surface-alt, #f8f9fb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      transition: opacity 0.4s;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-text {
+      font-size: 0.9rem;
+      color: var(--ee-color-text-secondary);
+    }
+  </style>
+
+  <!-- Components -->
+  <script src="/components/ee-person-card.js"></script>
+  <script src="/components/ee-stat-card.js"></script>
+  <script src="/components/ee-alert-banner.js"></script>
+  <script src="/components/ee-team-grid.js"></script>
+  <script src="/components/ee-person-list.js"></script>
+  <script src="/components/ee-comparison-table.js"></script>
+  <script src="/components/ee-coverage-matrix.js"></script>
+  <script src="/components/ee-timeline.js"></script>
+  <script src="/components/ee-insight-block.js"></script>
+  <script src="/components/ee-checklist.js"></script>
+  <script src="/components/ee-relationship-map.js"></script>
+  <script src="/components/ee-org-chart.js"></script>
+  <script src="/components/ee-canvas-block.js"></script>
+
+  <!-- Engine -->
+  <script src="/canvas-engine.js"></script>
+</head>
+<body>
+  <div class="loading-overlay" id="loading">
+    <div class="loading-text">Loading graph data...</div>
+  </div>
+
+  <div id="canvas-viewport"></div>
+
+  <div class="input-bar">
+    <div class="chips" id="suggestion-chips">
+      <button class="chip">Show pipeline candidates</button>
+      <button class="chip">Who else has these skills?</button>
+      <button class="chip">Compare replacement options</button>
+    </div>
+    <div class="input-wrapper">
+      <input type="text" placeholder="Ask about the impact..." id="query-input">
+      <button class="send-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="zoom-controls">
+    <button id="zoom-in" title="Zoom in">+</button>
+    <button id="zoom-out" title="Zoom out">&minus;</button>
+    <button id="zoom-fit" title="Fit all">&#8644;</button>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

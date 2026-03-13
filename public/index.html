@@ -5,25 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Atomic Primitives — Component Gallery</title>
   <link rel="stylesheet" href="/styles.css">
-  <script src="/components/ee-person-card.js" type="module"></script>
-  <script src="/components/ee-stat-card.js" type="module"></script>
-  <script src="/components/ee-team-grid.js" type="module"></script>
-  <script src="/components/ee-alert-banner.js" type="module"></script>
+  <script src="/components/ee-person-card.js"></script>
+  <script src="/components/ee-stat-card.js"></script>
+  <script src="/components/ee-team-grid.js"></script>
+  <script src="/components/ee-alert-banner.js"></script>
+  <script src="/components/ee-person-list.js"></script>
+  <script src="/components/ee-comparison-table.js"></script>
+  <script src="/components/ee-coverage-matrix.js"></script>
+  <script src="/components/ee-timeline.js"></script>
+  <script src="/components/ee-insight-block.js"></script>
+  <script src="/components/ee-checklist.js"></script>
+  <script src="/components/ee-relationship-map.js"></script>
+  <script src="/components/ee-org-chart.js"></script>
+  <script src="/components/ee-canvas-block.js"></script>
 </head>
 <body>
   <div class="gallery-header">
     <h1>Atomic Primitives</h1>
-    <p>Component gallery — Web Components for AI-assembled EE graph views</p>
+    <p>Component gallery — 13 Web Components for AI-assembled EE graph views.
+      <a href="/canvas.html" style="color: var(--ee-color-accent-light); margin-left: 1rem;">View Canvas Demo &rarr;</a>
+    </p>
   </div>
 
-  <!-- Person Card -->
+  <!-- 1. Person Card -->
   <div class="gallery-section" id="person-card-section">
     <h2>&lt;ee-person-card&gt;</h2>
     <p class="description">Displays a person from the EE graph. Sizes: sm, md, lg.</p>
     <div class="component-row" id="person-cards"></div>
   </div>
 
-  <!-- Stat Card -->
+  <!-- 2. Stat Card -->
   <div class="gallery-section" id="stat-card-section">
     <h2>&lt;ee-stat-card&gt;</h2>
     <p class="description">Single key metric with label and optional context. Supports severity levels.</p>
@@ -35,7 +46,7 @@
     </div>
   </div>
 
-  <!-- Alert Banner -->
+  <!-- 3. Alert Banner -->
   <div class="gallery-section" id="alert-banner-section">
     <h2>&lt;ee-alert-banner&gt;</h2>
     <p class="description">Attention banner with severity level. Supports optional action buttons.</p>
@@ -47,11 +58,74 @@
     </div>
   </div>
 
-  <!-- Team Grid -->
+  <!-- 4. Team Grid -->
   <div class="gallery-section" id="team-grid-section">
     <h2>&lt;ee-team-grid&gt;</h2>
     <p class="description">Grid of person cards showing team composition with optional manager highlight.</p>
     <div id="team-grid-container"></div>
+  </div>
+
+  <!-- 5. Person List -->
+  <div class="gallery-section" id="person-list-section">
+    <h2>&lt;ee-person-list&gt;</h2>
+    <p class="description">Compact list of people — denser than grid. Good for replacement candidates, mentees, etc.</p>
+    <div id="person-list-container" style="max-width: 320px;"></div>
+  </div>
+
+  <!-- 6. Comparison Table -->
+  <div class="gallery-section" id="comparison-table-section">
+    <h2>&lt;ee-comparison-table&gt;</h2>
+    <p class="description">Side-by-side comparison of 2+ entities across multiple dimensions.</p>
+    <div id="comparison-table-container" style="max-width: 500px;"></div>
+  </div>
+
+  <!-- 7. Coverage Matrix -->
+  <div class="gallery-section" id="coverage-matrix-section">
+    <h2>&lt;ee-coverage-matrix&gt;</h2>
+    <p class="description">Who covers what — skills &times; people, certs &times; teams.</p>
+    <div id="coverage-matrix-container" style="max-width: 500px;"></div>
+  </div>
+
+  <!-- 8. Timeline -->
+  <div class="gallery-section" id="timeline-section">
+    <h2>&lt;ee-timeline&gt;</h2>
+    <p class="description">Events over time with flexible configuration.</p>
+    <div id="timeline-container" style="max-width: 400px;"></div>
+  </div>
+
+  <!-- 9. Insight Block -->
+  <div class="gallery-section" id="insight-block-section">
+    <h2>&lt;ee-insight-block&gt;</h2>
+    <p class="description">AI-generated analysis — visually distinct from factual data.</p>
+    <div id="insight-block-container" style="max-width: 500px;"></div>
+  </div>
+
+  <!-- 10. Checklist -->
+  <div class="gallery-section" id="checklist-section">
+    <h2>&lt;ee-checklist&gt;</h2>
+    <p class="description">Action steps with owners and status tracking.</p>
+    <div id="checklist-container" style="max-width: 400px;"></div>
+  </div>
+
+  <!-- 11. Relationship Map -->
+  <div class="gallery-section" id="relationship-map-section">
+    <h2>&lt;ee-relationship-map&gt;</h2>
+    <p class="description">Small node-link diagram showing entity connections.</p>
+    <div id="relationship-map-container" style="max-width: 400px; height: 280px;"></div>
+  </div>
+
+  <!-- 12. Org Chart -->
+  <div class="gallery-section" id="org-chart-section">
+    <h2>&lt;ee-org-chart&gt;</h2>
+    <p class="description">Hierarchical org tree with collapsible levels.</p>
+    <div id="org-chart-container" style="max-width: 400px;"></div>
+  </div>
+
+  <!-- 13. Canvas Block -->
+  <div class="gallery-section" id="canvas-block-section">
+    <h2>&lt;ee-canvas-block&gt;</h2>
+    <p class="description">Generic Tier 3 container for AI-generated bespoke content.</p>
+    <div id="canvas-block-container" style="max-width: 400px;"></div>
   </div>
 
   <script>
@@ -59,8 +133,9 @@
       try {
         const res = await fetch('/api/graph/sample');
         const data = await res.json();
+        const impact = data.impactRadius;
 
-        // Person cards — show different sizes
+        // 1. Person cards — show different sizes
         const container = document.getElementById('person-cards');
         if (data.people && data.people.length) {
           ['lg', 'md', 'sm'].forEach((size, i) => {
@@ -73,7 +148,7 @@
           });
         }
 
-        // Team grid
+        // 4. Team grid
         if (data.sampleTeam && !data.sampleTeam.error) {
           const teamContainer = document.getElementById('team-grid-container');
           const grid = document.createElement('ee-team-grid');
@@ -82,6 +157,131 @@
           grid.members = data.sampleTeam.members;
           teamContainer.appendChild(grid);
         }
+
+        // 5. Person list
+        if (data.people) {
+          const pl = document.createElement('ee-person-list');
+          pl.setAttribute('title', 'Skill Replacement Candidates');
+          pl.people = data.people.slice(0, 5);
+          document.getElementById('person-list-container').appendChild(pl);
+        }
+
+        // 6. Comparison table
+        if (data.people && data.people.length >= 2) {
+          const ct = document.createElement('ee-comparison-table');
+          ct.items = data.people.slice(0, 3).map(p => ({ name: p.name, role: p.role, level: p.level, location: p.location, status: p.status }));
+          ct.fields = [
+            { key: 'role', label: 'Role' },
+            { key: 'level', label: 'Level' },
+            { key: 'location', label: 'Location' },
+            { key: 'status', label: 'Status' }
+          ];
+          document.getElementById('comparison-table-container').appendChild(ct);
+        }
+
+        // 7. Coverage matrix
+        const cm = document.createElement('ee-coverage-matrix');
+        cm.rows = [
+          { id: 'k8s', label: 'Kubernetes' },
+          { id: 'tf', label: 'Terraform' },
+          { id: 'aws', label: 'AWS Solutions' }
+        ];
+        cm.columns = [
+          { id: 'platform', label: 'Platform' },
+          { id: 'infra', label: 'Infra' },
+          { id: 'backend', label: 'Backend' }
+        ];
+        cm.data = [
+          { rowId: 'k8s', colId: 'platform', status: 'covered', value: '3 certified' },
+          { rowId: 'k8s', colId: 'infra', status: 'partial', value: '1 certified' },
+          { rowId: 'k8s', colId: 'backend', status: 'gap' },
+          { rowId: 'tf', colId: 'platform', status: 'covered', value: '2 certified' },
+          { rowId: 'tf', colId: 'infra', status: 'covered', value: '4 certified' },
+          { rowId: 'tf', colId: 'backend', status: 'expiring', value: '1 expiring' },
+          { rowId: 'aws', colId: 'platform', status: 'covered', value: '2 certified' },
+          { rowId: 'aws', colId: 'infra', status: 'covered', value: '3 certified' },
+          { rowId: 'aws', colId: 'backend', status: 'partial', value: '1 certified' }
+        ];
+        document.getElementById('coverage-matrix-container').appendChild(cm);
+
+        // 8. Timeline
+        const tl = document.createElement('ee-timeline');
+        tl.title = 'Key Events';
+        tl.events = [
+          { date: '2026-03-01', label: 'Raj submits resignation', severity: 'critical' },
+          { date: '2026-03-05', label: 'Knowledge transfer begins', severity: 'info', description: 'Focus on solo projects first' },
+          { date: '2026-03-10', label: 'Direct reports reassigned', severity: 'warning', description: 'Interim: report to Lisa Huang' },
+          { date: '2026-03-15', label: 'Last day', severity: 'critical' },
+          { date: '2026-03-22', label: 'Replacement interviews begin', severity: 'info' }
+        ];
+        document.getElementById('timeline-container').appendChild(tl);
+
+        // 9. Insight block
+        const ib = document.createElement('ee-insight-block');
+        ib.setAttribute('label', 'Impact Summary');
+        ib.content = '<p><strong>Raj Patel</strong> (Engineering Lead) represents a high-impact departure. Key risks include <strong>2 solo projects</strong> with no backup contributor and <strong>3 rare skills</strong> with limited org coverage.</p><p>Immediate action required on knowledge transfer and report reassignment.</p>';
+        document.getElementById('insight-block-container').appendChild(ib);
+
+        // 10. Checklist
+        const cl = document.createElement('ee-checklist');
+        cl.setAttribute('title', 'Departure Runbook');
+        cl.items = [
+          { text: 'Notify direct reports', owner: 'VP Engineering', status: 'done' },
+          { text: 'Begin knowledge transfer', owner: 'Raj Patel', status: 'in_progress', priority: 'critical' },
+          { text: 'Reassign direct reports', owner: 'HR Partner', status: 'pending', priority: 'high' },
+          { text: 'Update project staffing', owner: 'Project Leads', status: 'pending' },
+          { text: 'External recruitment kickoff', owner: 'Talent Acquisition', status: 'blocked', priority: 'high' }
+        ];
+        document.getElementById('checklist-container').appendChild(cl);
+
+        // 11. Relationship map
+        if (impact && !impact.error) {
+          const rm = document.createElement('ee-relationship-map');
+          const mapNodes = [{ id: impact.person.id, label: impact.person.name }];
+          const mapEdges = [];
+
+          // Add direct reports
+          impact.directReports.people.slice(0, 4).forEach(r => {
+            mapNodes.push({ id: r.id, label: r.name, type: 'person' });
+            mapEdges.push({ source: impact.person.id, target: r.id, label: 'reports_to' });
+          });
+
+          // Add a team
+          if (impact.teams.items.length > 0) {
+            const t = impact.teams.items[0];
+            mapNodes.push({ id: t.id, label: t.name, type: 'team' });
+            mapEdges.push({ source: impact.person.id, target: t.id, label: 'member_of' });
+          }
+
+          rm.nodes = mapNodes;
+          rm.edges = mapEdges;
+          rm.focusId = impact.person.id;
+          document.getElementById('relationship-map-container').appendChild(rm);
+        }
+
+        // 12. Org chart
+        if (impact && impact.directReports.people.length > 0) {
+          const oc = document.createElement('ee-org-chart');
+          const allPeople = [
+            { id: impact.person.id, name: impact.person.name, role: impact.person.role, avatarUrl: impact.person.avatarUrl },
+            ...impact.directReports.people
+          ];
+          oc.people = allPeople;
+          const reportsMap = {};
+          reportsMap[impact.person.id] = impact.directReports.people.map(r => r.id);
+          oc.reports = reportsMap;
+          oc.rootId = impact.person.id;
+          document.getElementById('org-chart-container').appendChild(oc);
+        }
+
+        // 13. Canvas block
+        const cb = document.createElement('ee-canvas-block');
+        cb.setAttribute('label', 'Custom View');
+        cb.setAttribute('cols', '4');
+        cb.setAttribute('rows', '2');
+        cb.content = '<div style="padding: 0.5rem;"><strong>Tier 3 Custom Block</strong><p style="margin: 0.5rem 0; font-size: 0.85rem; color: #5a6172;">This is a generic container for AI-generated bespoke content. When no Tier 1 primitive fits, the AI generates custom HTML/SVG here.</p><div style="background: #f8f9fb; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; color: #8b91a0;">Example: custom visualization, one-off analysis, specialized chart</div></div>';
+        document.getElementById('canvas-block-container').appendChild(cb);
+
       } catch (err) {
         console.error('Failed to load gallery data:', err);
       }

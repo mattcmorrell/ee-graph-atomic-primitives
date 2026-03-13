@@ -2,6 +2,14 @@
 
 > **Before making product decisions** (component design, interaction patterns, feature scope), **read KNOWLEDGE.md** for strategic context.
 
+## Mockups
+
+All HTML mockups must include the feedback panel. Add this before the closing `</body>` tag:
+```html
+<script src="feedback-panel.js"></script>
+```
+The `feedback-panel.js` file lives in `mockups/` — copy it alongside any new mockup or use a relative path. It auto-detects the active tab/design via `.switcher button.active` text and stores feedback per-design in localStorage. No server dependency.
+
 ## What This Is
 
 A library of polished Web Components (`<ee-person-card>`, `<ee-stat-card>`, etc.) that an AI can assemble into just-in-time UI views on an Employee Experience graph. See KNOWLEDGE.md for the full strategic vision.
@@ -89,18 +97,19 @@ customElements.define('ee-person-card', EePersonCard);
 
 | Component | Status | Description |
 |---|---|---|
-| `ee-person-card` | Stub | Person: avatar, name, role, level, location |
-| `ee-stat-card` | Stub | Single metric with label + context |
-| `ee-team-grid` | Stub | Grid of people showing group composition |
-| `ee-alert-banner` | Stub | Severity-coded attention banner |
-| `ee-cascade-diagram` | Planned | Impact/ripple visualization |
-| `ee-timeline` | Planned | Temporal sequence of events |
-| `ee-coverage-matrix` | Planned | "Who covers what" grid |
-| `ee-risk-gauge` | Planned | Single-metric severity indicator |
-| `ee-checklist` | Planned | Action steps / runbook |
-| `ee-comparison-table` | Planned | Side-by-side evaluation |
-| `ee-relationship-line` | Planned | Connection between entities |
-| `ee-graph-path` | Planned | Traversal visualization (visible-on-demand) |
+| `ee-person-card` | Built | Person: avatar, name, role, level, location. Sizes: sm/md/lg |
+| `ee-stat-card` | Built | Single metric with label, context, severity color |
+| `ee-alert-banner` | Built | Severity-coded attention banner with icon + action |
+| `ee-team-grid` | Built | Grid of mini person avatars with manager highlight |
+| `ee-person-list` | Built | Compact vertical list of people |
+| `ee-comparison-table` | Built | Side-by-side entity comparison table |
+| `ee-coverage-matrix` | Built | Skill/cert × team coverage with status icons |
+| `ee-timeline` | Built | Vertical timeline with severity-colored dots |
+| `ee-insight-block` | Built | AI analysis with "AI" badge, visually distinct from facts |
+| `ee-checklist` | Built | Action items with status, owners, priority badges |
+| `ee-relationship-map` | Built | SVG node-link diagram with focus node |
+| `ee-org-chart` | Built | Hierarchical tree with indented reports |
+| `ee-canvas-block` | Built | Generic Tier 3 container for AI-generated bespoke content |
 
 ## Design Principles
 
