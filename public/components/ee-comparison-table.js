@@ -3,7 +3,8 @@
  *
  * Properties:
  *   items  (Array of objects to compare)
- *   fields (Array of { key, label } defining comparison dimensions)
+ *   fields (Array of { key, label, changed? } defining comparison dimensions)
+ *     changed: boolean — if true, row is highlighted as changed between scenarios
  * Grid sizing: (items.length+1) x (fields.length+1), min 4x2
  */
 
@@ -48,16 +49,18 @@ class EeComparisonTable extends HTMLElement {
             </tr>
           </thead>
           <tbody>
-            ${fields.map(f => `
-              <tr>
-                <td class="field-label">${f.label || f.key}</td>
+            ${fields.map(f => {
+              const rowChanged = f.changed ? 'row-changed' : '';
+              return `
+              <tr class="${rowChanged}">
+                <td class="field-label">${f.label || f.key}${f.changed ? ' <span class="changed-dot">&#9679;</span>' : ''}</td>
                 ${items.map(item => {
                   const val = item[f.key];
                   const cls = f.highlight && f.highlight(val, item) ? 'highlight' : '';
                   return `<td class="${cls}">${val != null ? val : '—'}</td>`;
                 }).join('')}
               </tr>
-            `).join('')}
+            `;}).join('')}
           </tbody>
         </table>
       </div>
@@ -85,6 +88,9 @@ class EeComparisonTable extends HTMLElement {
       .field-label { font-weight: 500; color: var(--ee-color-text-secondary, #5a6172); white-space: nowrap; }
       td { color: var(--ee-color-text, #1a1a2e); }
       .highlight { background: var(--ee-color-warning-bg, #fef9e7); font-weight: 600; }
+      .row-changed td { background: var(--ee-color-info-bg, #eef3fa); }
+      .row-changed .field-label { color: var(--ee-color-info, #4a6fa5); font-weight: 600; }
+      .changed-dot { color: var(--ee-color-info, #4a6fa5); font-size: 0.5rem; vertical-align: middle; margin-left: 0.2rem; }
     `;
   }
 }

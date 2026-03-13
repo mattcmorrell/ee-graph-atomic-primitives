@@ -106,14 +106,18 @@
   // 6. Checklist — recommended actions
   const checklistEl = document.createElement('ee-checklist');
   checklistEl.setAttribute('title', 'Recommended Actions');
-  checklistEl.items = [
+  const checklistItems = [
     { text: `Reassign ${impact.directReports.count} direct reports`, owner: impact.manager ? impact.manager.name : 'VP Engineering', status: 'pending', priority: 'high' },
     { text: 'Begin knowledge transfer for solo projects', owner: person.name, status: 'pending', priority: 'critical' },
-    { text: `Find mentor replacements for ${summary.menteesWithNoOtherMentor.length} mentees`, owner: 'HR Partner', status: 'pending', priority: 'medium' },
     { text: 'Identify skill replacement candidates', owner: 'Talent Acquisition', status: 'pending', priority: 'high' },
     { text: 'Schedule skip-level 1:1s with direct reports', owner: impact.manager ? impact.manager.name : 'VP Engineering', status: 'pending' },
     { text: 'Update project staffing plans', owner: 'Project Leads', status: 'pending' }
   ];
+  // Only add mentee item if there are actually mentees at risk
+  if (summary.menteesWithNoOtherMentor.length > 0) {
+    checklistItems.splice(2, 0, { text: `Find mentor replacements for ${summary.menteesWithNoOtherMentor.length} mentees`, owner: 'HR Partner', status: 'pending', priority: 'medium' });
+  }
+  checklistEl.items = checklistItems;
   engine.addBlock('checklist', checklistEl, 6, 2 + alerts.length + 1, 4, 4);
 
   // 7. Person list — skill replacement candidates
@@ -171,6 +175,13 @@
 
   if (summary.soloProjects.length > 0) {
     engine.addConnector('stat-1', 'insight');
+  }
+
+  // --- Provenance ---
+  const now = new Date();
+  const prov = document.getElementById('provenance');
+  if (prov) {
+    prov.textContent = `Generated ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })} · Acme Co graph (${data.people.length} people sampled)`;
   }
 
   // --- Camera ---

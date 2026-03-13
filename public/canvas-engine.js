@@ -114,20 +114,29 @@ class CanvasEngine {
     this.container.style.cursor = '';
   }
 
-  // --- Zoom ---
+  // --- Zoom (Ctrl/Cmd+scroll only, bare scroll pans) ---
   _onWheel(e) {
     e.preventDefault();
-    const rect = this.container.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
 
-    const delta = -e.deltaY * 0.001;
-    const newScale = Math.max(this.MIN_SCALE, Math.min(this.MAX_SCALE, this.transform.scale * (1 + delta)));
-    const ratio = newScale / this.transform.scale;
+    if (e.ctrlKey || e.metaKey) {
+      // Pinch-zoom or Ctrl+scroll → zoom
+      const rect = this.container.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
 
-    this.transform.x = mx - (mx - this.transform.x) * ratio;
-    this.transform.y = my - (my - this.transform.y) * ratio;
-    this.transform.scale = newScale;
+      const delta = -e.deltaY * 0.003;
+      const newScale = Math.max(this.MIN_SCALE, Math.min(this.MAX_SCALE, this.transform.scale * (1 + delta)));
+      const ratio = newScale / this.transform.scale;
+
+      this.transform.x = mx - (mx - this.transform.x) * ratio;
+      this.transform.y = my - (my - this.transform.y) * ratio;
+      this.transform.scale = newScale;
+    } else {
+      // Bare scroll → pan
+      this.transform.x -= e.deltaX;
+      this.transform.y -= e.deltaY;
+      this._hasUserPanned = true;
+    }
     this._applyTransform();
   }
 

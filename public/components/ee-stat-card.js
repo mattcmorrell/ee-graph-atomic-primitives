@@ -1,12 +1,13 @@
 /**
  * <ee-stat-card> — Single metric with label and optional context.
  *
- * Attributes: label, value, context, severity (info|warning|critical|success)
+ * Attributes: label, value, context, severity (info|warning|critical|success),
+ *   delta (optional change indicator, e.g. "+3", "-12%")
  * Grid sizing: 2x1 always
  */
 
 class EeStatCard extends HTMLElement {
-  static get observedAttributes() { return ['label', 'value', 'context', 'severity']; }
+  static get observedAttributes() { return ['label', 'value', 'context', 'severity', 'delta']; }
 
   constructor() {
     super();
@@ -23,11 +24,22 @@ class EeStatCard extends HTMLElement {
     const value = this.getAttribute('value') || '—';
     const context = this.getAttribute('context') || '';
     const severity = this.getAttribute('severity') || '';
+    const delta = this.getAttribute('delta') || '';
+
+    // Auto-detect delta direction
+    let deltaClass = '';
+    if (delta) {
+      const num = parseFloat(delta);
+      deltaClass = num > 0 ? 'delta-up' : num < 0 ? 'delta-down' : 'delta-flat';
+    }
 
     this.shadowRoot.innerHTML = `
       <style>${this.styles()}</style>
       <div class="card ${severity ? `severity-${severity}` : ''}">
-        <div class="value">${value}</div>
+        <div class="value-row">
+          <span class="value">${value}</span>
+          ${delta ? `<span class="delta ${deltaClass}">${delta}</span>` : ''}
+        </div>
         <div class="label">${label}</div>
         ${context ? `<div class="context">${context}</div>` : ''}
       </div>
@@ -50,12 +62,20 @@ class EeStatCard extends HTMLElement {
         transition: box-shadow 0.15s ease;
       }
       .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+      .value-row { display: flex; align-items: baseline; gap: 0.35rem; }
       .value {
         font-size: 1.75rem;
         font-weight: 700;
         color: var(--ee-color-text, #1a1a2e);
         line-height: 1.2;
       }
+      .delta {
+        font-size: 0.8rem; font-weight: 600;
+        padding: 1px 5px; border-radius: 3px;
+      }
+      .delta-up { color: var(--ee-color-success, #27ae60); background: var(--ee-color-success-bg, #eafaf1); }
+      .delta-down { color: var(--ee-color-critical, #c0392b); background: var(--ee-color-critical-bg, #fdecea); }
+      .delta-flat { color: var(--ee-color-text-muted, #8b91a0); background: var(--ee-color-surface-alt, #f8f9fb); }
       .label {
         font-size: 0.8rem;
         color: var(--ee-color-text-secondary, #5a6172);

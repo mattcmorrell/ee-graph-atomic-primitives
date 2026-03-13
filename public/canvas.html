@@ -141,6 +141,20 @@
       border-color: var(--ee-color-accent);
     }
 
+    /* Provenance footer */
+    .provenance {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      font-size: 0.7rem;
+      color: var(--ee-color-text-muted, #8b91a0);
+      background: rgba(255,255,255,0.85);
+      padding: 3px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
     /* Loading state */
     .loading-overlay {
       position: fixed;
@@ -178,6 +192,8 @@
   <script src="/components/ee-relationship-map.js"></script>
   <script src="/components/ee-org-chart.js"></script>
   <script src="/components/ee-canvas-block.js"></script>
+  <script src="/components/ee-delta-card.js"></script>
+  <script src="/components/ee-bar-chart.js"></script>
 
   <!-- Engine -->
   <script src="/canvas-engine.js"></script>
@@ -186,6 +202,8 @@
   <div class="loading-overlay" id="loading">
     <div class="loading-text">Loading graph data...</div>
   </div>
+
+  <div class="provenance" id="provenance"></div>
 
   <div id="canvas-viewport"></div>
 

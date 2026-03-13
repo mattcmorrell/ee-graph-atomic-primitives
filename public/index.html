@@ -18,6 +18,8 @@
   <script src="/components/ee-relationship-map.js"></script>
   <script src="/components/ee-org-chart.js"></script>
   <script src="/components/ee-canvas-block.js"></script>
+  <script src="/components/ee-delta-card.js"></script>
+  <script src="/components/ee-bar-chart.js"></script>
 </head>
 <body>
   <div class="gallery-header">
@@ -37,12 +39,14 @@
   <!-- 2. Stat Card -->
   <div class="gallery-section" id="stat-card-section">
     <h2>&lt;ee-stat-card&gt;</h2>
-    <p class="description">Single key metric with label and optional context. Supports severity levels.</p>
+    <p class="description">Single key metric with label and optional context. Supports severity levels and optional delta badge.</p>
     <div class="component-row" id="stat-cards">
       <ee-stat-card label="Direct Reports" value="7" context="2 with no backup"></ee-stat-card>
       <ee-stat-card label="Projects at Risk" value="3" severity="warning" context="1 solo contributor"></ee-stat-card>
       <ee-stat-card label="Unique Skills" value="4" severity="critical" context="< 3 others have these"></ee-stat-card>
       <ee-stat-card label="Team Coverage" value="92%" severity="success"></ee-stat-card>
+      <ee-stat-card label="Headcount" value="48" delta="+3" context="vs. last quarter"></ee-stat-card>
+      <ee-stat-card label="Attrition" value="8%" delta="-2%" severity="success" context="improving trend"></ee-stat-card>
     </div>
   </div>
 
@@ -126,6 +130,25 @@
     <h2>&lt;ee-canvas-block&gt;</h2>
     <p class="description">Generic Tier 3 container for AI-generated bespoke content.</p>
     <div id="canvas-block-container" style="max-width: 400px;"></div>
+  </div>
+
+  <!-- 14. Delta Card -->
+  <div class="gallery-section" id="delta-card-section">
+    <h2>&lt;ee-delta-card&gt;</h2>
+    <p class="description">Before &rarr; after with change emphasis. Auto-detects direction and severity from values.</p>
+    <div class="component-row">
+      <ee-delta-card label="Headcount" before="48" after="45" context="3 positions eliminated"></ee-delta-card>
+      <ee-delta-card label="Budget" before="2400000" after="2650000" format="currency" context="Q2 increase approved"></ee-delta-card>
+      <ee-delta-card label="Coverage" before="72" after="72" format="percent" context="No change" severity="neutral"></ee-delta-card>
+      <ee-delta-card label="Attrition" before="12" after="8" format="percent" severity="positive" context="Retention program working"></ee-delta-card>
+    </div>
+  </div>
+
+  <!-- 15. Bar Chart -->
+  <div class="gallery-section" id="bar-chart-section">
+    <h2>&lt;ee-bar-chart&gt;</h2>
+    <p class="description">Horizontal bar chart for comparing quantities. Supports overlay bars for before/after scenarios.</p>
+    <div id="bar-chart-container" style="max-width: 500px; height: 280px;"></div>
   </div>
 
   <script>
@@ -281,6 +304,18 @@
         cb.setAttribute('rows', '2');
         cb.content = '<div style="padding: 0.5rem;"><strong>Tier 3 Custom Block</strong><p style="margin: 0.5rem 0; font-size: 0.85rem; color: #5a6172;">This is a generic container for AI-generated bespoke content. When no Tier 1 primitive fits, the AI generates custom HTML/SVG here.</p><div style="background: #f8f9fb; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; color: #8b91a0;">Example: custom visualization, one-off analysis, specialized chart</div></div>';
         document.getElementById('canvas-block-container').appendChild(cb);
+
+        // 15. Bar chart
+        const bc = document.createElement('ee-bar-chart');
+        bc.setAttribute('title', 'Team Headcount: Current vs. Plan B');
+        bc.bars = [
+          { label: 'Platform', value: 20, secondaryValue: 17, color: '#6c63ff', secondaryColor: '#6c63ff' },
+          { label: 'Backend', value: 12, secondaryValue: 12, color: '#4a6fa5', secondaryColor: '#4a6fa5' },
+          { label: 'Mobile', value: 8, secondaryValue: 11, color: '#27ae60', secondaryColor: '#27ae60' },
+          { label: 'Data', value: 6, secondaryValue: 6, color: '#d4a017', secondaryColor: '#d4a017' },
+          { label: 'DevOps', value: 5, secondaryValue: 3, color: '#c0392b', secondaryColor: '#c0392b' }
+        ];
+        document.getElementById('bar-chart-container').appendChild(bc);
 
       } catch (err) {
         console.error('Failed to load gallery data:', err);
