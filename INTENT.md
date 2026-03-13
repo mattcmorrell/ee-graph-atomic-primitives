@@ -12,6 +12,8 @@ These primitives serve all three interaction modes described in KNOWLEDGE.md: Si
 
 Starting with 4 foundational components + a gallery page + a scenario demo page. The server includes the full graph query layer (ported from jit-ui-canvas) so components can be developed against real data.
 
+**UI concept (current thinking):** Three panels — Briefing (what needs you now), Conversation (ask/build), My Workflows (generated automations that persist and compound).
+
 **First 4 components:**
 1. `ee-person-card` — the most-used primitive, shows a person
 2. `ee-stat-card` — single key metric with context

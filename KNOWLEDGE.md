@@ -43,8 +43,6 @@ You describe a scenario. The AI traverses the graph and generates a purpose-buil
 
 Example: "What if we open an office in Vilnius?" produces a mini-application showing labor law implications, employees who requested EU transfers, required certifications by role, tax implications — all assembled from graph traversals, not canned reports.
 
-This isn't a text answer. It's a **generated mini-application** — cards, tables, checklists, links to relevant people and policies. Specific to your org, assembled from the graph, disposable when done.
-
 ### Mode 2: "Make this happen whenever..." → Generated Automation
 
 You've seen a situation room and say: "Whenever someone requests an EU transfer, run this automatically and alert me."
@@ -73,16 +71,6 @@ This is what separates the concept from "ChatGPT for HR":
 
 1. **Workflows persist.** Your Lithuania question becomes a saved workflow. Next time someone asks, it's already there. The org accumulates operational knowledge.
 2. **Workflows compose.** The Lithuania workflow + the certification tracker + the tax compliance monitor all run on the same graph. They see each other's effects. A new hire in Vilnius triggers all three.
-3. **The AI gets better.** Every workflow teaches the system what YOUR org cares about. After 6 months, the daily briefing shows the long-tail things that matter to your specific company.
-4. **Zero marginal cost per workflow.** The graph has the data. The AI knows how to traverse. A new "feature" is just a new traversal pattern.
-
-## The UI Concept
-
-Three panels:
-
-- **Briefing** — What needs you right now. Items from both built-in patterns and generated workflows. A Lithuanian cert expiry sits right next to a payroll approval.
-- **Conversation** — Ask anything, build anything. Questions generate situation rooms. Follow-ups refine them. "Watch for this" creates automations.
-- **My Workflows** — Generated automations that persist and compound. Each shows its status, last run, any alerts.
 
 ## Graph Visibility
 
@@ -149,15 +137,4 @@ Over time:
 
 The system builds a vocabulary specific to YOUR org. It feels like it was built for you because, incrementally, it was.
 
-## The Delight Formula
-
-Delight = three things happening simultaneously:
-1. **Faster than the alternative** — generating a custom view beats navigating menus in a traditional HRIS
-2. **Surfaces things you didn't know to ask about** — "oh, Derek loses his only mentor" is where trust is built
-3. **Makes you look prepared** — share the cascade view with your VP; "how long did this take?" "30 seconds."
-
-## The CEO Pitch
-
-"Every HRIS vendor builds for the same 20 features because each costs millions to develop. Your company's specific needs — the weird approval chains, the industry-specific compliance, the cross-office coordination rules — will never be a feature in any HRIS.
-
-With the employee graph + AI, every workflow your company needs is a conversation away. Describe it, the system builds it. No engineering, no vendor roadmap, no professional services. The 80th percentile of your needs is served the same day you think of it."
+The measure of delight: it's faster than navigating a traditional HRIS, it surfaces things you didn't know to ask about, and it makes you look prepared.
